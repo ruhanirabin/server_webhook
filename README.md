@@ -4,8 +4,7 @@
 
 The Webhook Script is a Bash utility designed to send webhook notifications with custom messages and URLs. It supports installation as a systemd service, making it suitable for automation tasks such as system events and scheduled notifications.
 
-*I use this to get notification on my phone when server restarts after a security update via automation tools like pabbly or flowmattic. 
-*
+*I use this to get notification on my phone when server restarts after a security update via automation tools like pabbly or flowmattic.*
 
 ### Key Features
 
