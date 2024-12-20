@@ -17,6 +17,7 @@ The Webhook Script is a Bash utility designed to send webhook notifications with
 ## Usage Instructions
 
 Single command latest script execution on SSH terminal, copy the code below and run:
+
 ```sudo bash -c "$(curl -fsSL https://github.com/ruhanirabin/server_webhook/raw/main/webhook.sh)"```
 
 This will ask you
