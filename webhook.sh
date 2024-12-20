@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Author: Ruhani Rabin https://www.ruhanirabin.com
-# Revision: 3.2
+# Revision: 3.3
 # This file is part of Webhook Script.
 #
 # Webhook Script is free software: you can redistribute it and/or modify
@@ -85,6 +85,7 @@ UNINSTALL_MODE=false
 CUSTOM_TEXT_MODE=false
 
 if [ $# -eq 0 ]; then
+  # No arguments provided, prompt for text and URL and install service
   read -p "Enter custom text message: " additional_text
   if [ -z "$additional_text" ]; then
     echo "Error: Custom text message cannot be empty."
@@ -97,7 +98,30 @@ if [ $# -eq 0 ]; then
     exit 1
   fi
 
-  send_webhook "$webhooks_url" "$additional_text"
+  echo "Installing script and systemd service..."
+  cp "$(basename "$0")" /usr/local/bin/webhook.sh
+  chmod +x /usr/local/bin/webhook.sh
+
+  SERVICE_FILE="/etc/systemd/system/webhook.service"
+  cat <<EOF | sudo tee "$SERVICE_FILE"
+[Unit]
+Description=Send custom webhook on system event
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/webhook.sh -e "$additional_text" $webhooks_url
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+  sudo systemctl daemon-reload
+  sudo systemctl enable webhook.service
+  sudo systemctl start webhook.service
+
+  echo "Script and service installed successfully!"
+  echo "When triggered, this service will send: \"$additional_text\" to $webhooks_url"
   exit 0
 fi
 
@@ -135,7 +159,7 @@ while [[ $# -gt 0 ]]; do
       echo "  ./webhook.sh -i -e \"<text>\" <webhook_url>     Install service and set it to send the specified text to the specified URL when triggered"
       echo "  ./webhook.sh -u                                Uninstall webhook script and systemd service"
       echo "  ./webhook.sh -e \"<text>\" <webhook_url>        Send a webhook once with the specified text and URL"
-      echo "  ./webhook.sh (no arguments)                    Prompt interactively for text and URL, then send webhook"
+      echo "  ./webhook.sh (no arguments)                    Prompt interactively for text and URL, then install service"
       echo "  ./webhook.sh -h, --help                        Display this help message"
       exit 0
       ;;
