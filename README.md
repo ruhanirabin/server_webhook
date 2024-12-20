@@ -37,13 +37,13 @@ The Webhook Script is a Bash utility designed to send webhook notifications with
 - Installs the script and sets it as a systemd service.
 - The specified custom message and URL will be used for notifications.
 
-. **Uninstall Mode:**
+3. **Uninstall Mode:**
 `./webhook.sh -u`
 - Uninstalls the script and removes the systemd service.
 
 4. **Send a One-Time Notification:**
-
 `./webhook.sh -e "One-time Message" <webhook_url>`
+
 - Sends a single webhook notification with the provided message and URL.
 
 5. Help:
